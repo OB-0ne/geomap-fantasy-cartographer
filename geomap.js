@@ -15,7 +15,7 @@ function draw_map(){
   document.getElementById('map').setAttribute("style","height:"+(custom_map_height)+"px");
 
   // Add a tile layer (you can change to other providers if needed)
-  var def_Map = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  var def_Map = L.tileLayer('https://{s}.tile. .org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors',
     zoomSnap: 0.1,
   });
@@ -43,9 +43,34 @@ function draw_map(){
   // initialize the control which can be interacted with
   var layerControl = L.control.layers(baseMaps,overlays).addTo(map);
 
+  var baseMapOverlay_width = 187;
+  var baseMapOverlay_height = 92;
+  var latLngMapImage = L.latLngBounds([[-(baseMapOverlay_height/2),-(baseMapOverlay_width/2)],[baseMapOverlay_height/2,baseMapOverlay_width/2]]);
+  console.log(latLngMapImage);
+  var baseMapOverlay = L.imageOverlay("data/map_img/gia_map.png", latLngMapImage, {
+    opacity: 0.8,
+    interactive: true
+  }).addTo(map);
+
+  map.fitBounds(latLngMapImage);
+
+  // setup first province map for Yearndale
+  // var yearndale_center = [-17.9787, 3.8672];
+  var yearndale_center = [4.56, -18.27];
+  var layerScale = 3;
+  latLngMapImage = L.latLngBounds([[yearndale_center[1]-7.18/layerScale, yearndale_center[0]-10.2/layerScale], [yearndale_center[1]+7.18/layerScale, yearndale_center[0]+10.2/layerScale]]);  
+  imageOverlay = L.imageOverlay("data/map_img/yearndale_valley.jpg", latLngMapImage, {
+    opacity: 0.8,
+    interactive: true
+  }).addTo(map);
+    map.fitBounds(latLngMapImage);
+
+  // map.fitBounds(latLngMapImage);
+
 }
 
 function setup_map(){
+
   
 }
 
@@ -62,4 +87,16 @@ window.onload = function() {
   document.getElementById('info-popup').classList.remove('hidden');
   L.DomEvent.disableScrollPropagation(document.getElementById('info-popup-byDate'));
   L.DomEvent.disableClickPropagation(document.getElementById('info-popup-byDate'));
+
+  // DEBUG MODE
+
+  document.getElementById('info-popup-byDate').style.setProperty('display', 'none', 'important');
+  document.getElementById('info-popup').classList.add('hidden');
+
+  map.on('click', function(e){
+    var coord = e.latlng;
+    var lat = coord.lat;
+    var lng = coord.lng;
+    console.log("Lat/Long: " + lat + ", " + lng);
+  });
 };
