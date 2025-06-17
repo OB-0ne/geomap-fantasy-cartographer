@@ -43,10 +43,9 @@ function draw_map(){
   // initialize the control which can be interacted with
   var layerControl = L.control.layers(baseMaps,overlays).addTo(map);
 
-  var baseMapOverlay_width = 187;
+  var baseMapOverlay_width = 202;
   var baseMapOverlay_height = 92;
   var latLngMapImage = L.latLngBounds([[-(baseMapOverlay_height/2),-(baseMapOverlay_width/2)],[baseMapOverlay_height/2,baseMapOverlay_width/2]]);
-  console.log(latLngMapImage);
   var baseMapOverlay = L.imageOverlay("data/map_img/gia_map.png", latLngMapImage, {
     opacity: 0.8,
     interactive: true
@@ -63,7 +62,7 @@ function draw_map(){
     opacity: 0.8,
     interactive: true
   }).addTo(map);
-    map.fitBounds(latLngMapImage);
+  // map.fitBounds(latLngMapImage);
 
   // map.fitBounds(latLngMapImage);
 
@@ -71,6 +70,16 @@ function draw_map(){
 
 function setup_map(){
 
+  draw_ship_beacons();
+}
+
+// Make the markers for the 12 ships
+function draw_ship_beacons(){
+  d3.csv("data/map_info/ship_beacons.csv",function(data) {
+    data.forEach(d => {
+      L.circle([d.lat, d.long], {radius: 20000, color: d.circle_color}).addTo(map);     
+    });    
+  });
   
 }
 
@@ -97,6 +106,6 @@ window.onload = function() {
     var coord = e.latlng;
     var lat = coord.lat;
     var lng = coord.lng;
-    console.log("Lat/Long: " + lat + ", " + lng);
+    console.log("Lat/Long: " + Math.round(lat*1000)/1000 + ", " + Math.round(lng*1000)/1000);
   });
 };
